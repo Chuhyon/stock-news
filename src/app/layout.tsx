@@ -15,9 +15,9 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "AI 주식 뉴스 | KOSPI 분석",
-  description: "KOSPI 상위 종목 뉴스를 AI로 분석합니다. 매일 유망주 3종목을 선정하고 뉴스를 요약합니다.",
-  keywords: ["KOSPI", "주식", "AI", "뉴스", "분석", "유망주"],
+  title: "AI 주식 뉴스 | KOSPI & NASDAQ 분석",
+  description: "KOSPI & NASDAQ 상위 종목 뉴스를 AI로 분석합니다. 매일 유망주를 선정하고 뉴스를 요약합니다.",
+  keywords: ["KOSPI", "NASDAQ", "주식", "AI", "뉴스", "분석", "유망주"],
 };
 
 export default function RootLayout({

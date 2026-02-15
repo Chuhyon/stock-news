@@ -1,8 +1,11 @@
+export type MarketType = 'KOSPI' | 'NASDAQ';
+
 export interface Stock {
   code: string;
   name_ko: string;
   name_en: string;
   sector: string;
+  market: MarketType;
   is_top_10: boolean;
   is_high_potential: boolean;
   potential_score: number | null;
@@ -33,6 +36,7 @@ export interface AISummary {
 export interface DailyAnalysis {
   id: string;
   analysis_date: string;
+  market: MarketType;
   selected_stocks: SelectedStock[];
   analysis_summary: string;
   created_at: string;

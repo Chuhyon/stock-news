@@ -1,9 +1,11 @@
 import { complete } from './openai';
 import { AI_CONFIG, POTENTIAL_STOCKS_COUNT } from '@/config/constants';
 import type { NewsArticle } from '@/types/news';
-import type { Stock } from '@/types/stock';
+import type { Stock, MarketType } from '@/types/stock';
 
-const ANALYSIS_SYSTEM_PROMPT = `당신은 한국 주식시장 분석 전문가입니다.
+function getAnalysisSystemPrompt(market: MarketType) {
+  const marketLabel = market === 'KOSPI' ? '한국 주식시장(KOSPI)' : '미국 주식시장(NASDAQ)';
+  return `당신은 ${marketLabel} 분석 전문가입니다.
 주어진 종목별 뉴스 데이터를 분석하여, 가장 유망한 ${POTENTIAL_STOCKS_COUNT}개 종목을 선정하세요.
 
 다음 JSON 형식으로 출력하세요:
@@ -19,6 +21,7 @@ const ANALYSIS_SYSTEM_PROMPT = `당신은 한국 주식시장 분석 전문가�
   "analysis_summary": "오늘의 종합 시장 분석 (3-5문장, 한국어)"
 }
 반드시 유효한 JSON만 출력하세요.`;
+}
 
 export interface AnalysisResult {
   selected_stocks: {
@@ -34,8 +37,11 @@ export interface AnalysisResult {
 
 export async function analyzeAndSelectPotential(
   stocks: Stock[],
-  newsByStock: Record<string, NewsArticle[]>
+  newsByStock: Record<string, NewsArticle[]>,
+  market: MarketType = 'KOSPI'
 ): Promise<AnalysisResult> {
+  const marketLabel = market === 'KOSPI' ? 'KOSPI' : 'NASDAQ';
+
   const stockSummaries = stocks.map((stock) => {
     const news = newsByStock[stock.code] || [];
     const newsSnippets = news
@@ -48,11 +54,11 @@ export async function analyzeAndSelectPotential(
 ${newsSnippets || '뉴스 없음'}`;
   });
 
-  const prompt = `오늘의 KOSPI 주요 종목 뉴스:\n\n${stockSummaries.join('\n\n')}`;
+  const prompt = `오늘의 ${marketLabel} 주요 종목 뉴스:\n\n${stockSummaries.join('\n\n')}`;
 
   const result = await complete(
     prompt,
-    ANALYSIS_SYSTEM_PROMPT,
+    getAnalysisSystemPrompt(market),
     AI_CONFIG.analysisModel,
     AI_CONFIG.maxTokensAnalysis
   );

@@ -12,6 +12,8 @@ export default function StockCard({ stock }: StockCardProps) {
   const isUp = changePct > 0;
   const isDown = changePct < 0;
 
+  const isNasdaq = stock.market === 'NASDAQ';
+
   const sentimentColor = {
     positive: 'text-green-400',
     negative: 'text-red-400',
@@ -22,6 +24,18 @@ export default function StockCard({ stock }: StockCardProps) {
     positive: '긍정',
     negative: '부정',
     neutral: '중립',
+  };
+
+  // KOSPI: 빨강(↑)/파랑(↓), NASDAQ: 초록(↑)/빨강(↓)
+  const upColor = isNasdaq ? 'text-green-400' : 'text-red-400';
+  const downColor = isNasdaq ? 'text-red-400' : 'text-blue-400';
+  const currency = isNasdaq ? '$' : '원';
+
+  const formatPrice = (price: number) => {
+    if (isNasdaq) {
+      return `$${price.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+    }
+    return price.toLocaleString();
   };
 
   return (
@@ -48,12 +62,12 @@ export default function StockCard({ stock }: StockCardProps) {
         {stock.last_price && (
           <div className="mb-3 flex items-baseline gap-2">
             <span className="text-2xl font-bold text-white">
-              {stock.last_price.toLocaleString()}
+              {formatPrice(stock.last_price)}
             </span>
-            <span className="text-sm text-gray-500">원</span>
+            {!isNasdaq && <span className="text-sm text-gray-500">{currency}</span>}
             <span
               className={`ml-auto flex items-center gap-1 text-sm font-medium ${
-                isUp ? 'text-red-400' : isDown ? 'text-blue-400' : 'text-gray-400'
+                isUp ? upColor : isDown ? downColor : 'text-gray-400'
               }`}
             >
               {isUp ? <TrendingUp className="h-4 w-4" /> : isDown ? <TrendingDown className="h-4 w-4" /> : <Minus className="h-4 w-4" />}

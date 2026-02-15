@@ -66,6 +66,17 @@ export default async function StockDetailPage({ params }: Props) {
   const changePct = stock.price_change_pct ?? 0;
   const isUp = changePct > 0;
   const isDown = changePct < 0;
+  const isNasdaq = stock.market === 'NASDAQ';
+
+  const upColor = isNasdaq ? 'text-green-400' : 'text-red-400';
+  const downColor = isNasdaq ? 'text-red-400' : 'text-blue-400';
+
+  const formatPrice = (price: number) => {
+    if (isNasdaq) {
+      return `$${price.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+    }
+    return price.toLocaleString();
+  };
 
   return (
     <div className="mx-auto max-w-4xl px-4 py-8 sm:px-6 lg:px-8">
@@ -83,6 +94,7 @@ export default async function StockDetailPage({ params }: Props) {
             <h1 className="text-3xl font-bold text-white">{stock.name_ko}</h1>
             <p className="text-sm text-gray-500">
               {stock.name_en} &middot; {stock.code} &middot; {stock.sector}
+              {stock.market && <> &middot; {stock.market}</>}
             </p>
           </div>
           {stock.is_high_potential && (
@@ -93,12 +105,12 @@ export default async function StockDetailPage({ params }: Props) {
         {stock.last_price && (
           <div className="mt-4 flex items-baseline gap-3">
             <span className="text-4xl font-bold text-white">
-              {stock.last_price.toLocaleString()}
+              {formatPrice(stock.last_price)}
             </span>
-            <span className="text-lg text-gray-500">원</span>
+            {!isNasdaq && <span className="text-lg text-gray-500">원</span>}
             <span
               className={`flex items-center gap-1 text-lg font-medium ${
-                isUp ? 'text-red-400' : isDown ? 'text-blue-400' : 'text-gray-400'
+                isUp ? upColor : isDown ? downColor : 'text-gray-400'
               }`}
             >
               {isUp ? <TrendingUp className="h-5 w-5" /> : isDown ? <TrendingDown className="h-5 w-5" /> : <Minus className="h-5 w-5" />}

@@ -1,18 +1,25 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { createServerClient } from '@/lib/supabase/server';
 
 export const revalidate = 3600;
 
-export async function GET() {
+export async function GET(request: NextRequest) {
   try {
     const supabase = createServerClient();
+    const market = request.nextUrl.searchParams.get('market');
 
-    const { data: stocks, error } = await supabase
+    let query = supabase
       .from('stocks')
       .select('*')
       .or('is_top_10.eq.true,is_high_potential.eq.true')
       .order('is_high_potential', { ascending: false })
       .order('code', { ascending: true });
+
+    if (market) {
+      query = query.eq('market', market);
+    }
+
+    const { data: stocks, error } = await query;
 
     if (error) throw error;
 
