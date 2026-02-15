@@ -1,13 +1,16 @@
 import Link from 'next/link';
-import { TrendingUp, TrendingDown, Minus } from 'lucide-react';
+import { TrendingUp, TrendingDown, Minus, Brain, BookOpen } from 'lucide-react';
 import type { StockWithSummary } from '@/types/stock';
 import PotentialBadge from './PotentialBadge';
 
 interface StockCardProps {
   stock: StockWithSummary;
+  potentialReason?: string;
+  crowdPsychology?: string;
+  historicalPattern?: string;
 }
 
-export default function StockCard({ stock }: StockCardProps) {
+export default function StockCard({ stock, potentialReason, crowdPsychology, historicalPattern }: StockCardProps) {
   const changePct = stock.price_change_pct ?? 0;
   const isUp = changePct > 0;
   const isDown = changePct < 0;
@@ -56,6 +59,27 @@ export default function StockCard({ stock }: StockCardProps) {
         {stock.is_high_potential && (
           <div className="mb-3">
             <PotentialBadge score={stock.potential_score} />
+            {potentialReason && (
+              <p className="mt-2 text-sm leading-relaxed text-amber-200/70">
+                {potentialReason}
+              </p>
+            )}
+            {crowdPsychology && (
+              <div className="mt-2 flex gap-1.5 rounded-md bg-indigo-500/10 px-2.5 py-1.5">
+                <Brain className="mt-0.5 h-3.5 w-3.5 shrink-0 text-indigo-400" />
+                <p className="text-xs leading-relaxed text-indigo-300/80">
+                  <span className="font-medium text-indigo-300">군중 심리</span> — {crowdPsychology}
+                </p>
+              </div>
+            )}
+            {historicalPattern && (
+              <div className="mt-1.5 flex gap-1.5 rounded-md bg-emerald-500/10 px-2.5 py-1.5">
+                <BookOpen className="mt-0.5 h-3.5 w-3.5 shrink-0 text-emerald-400" />
+                <p className="text-xs leading-relaxed text-emerald-300/80">
+                  <span className="font-medium text-emerald-300">역사적 패턴</span> — {historicalPattern}
+                </p>
+              </div>
+            )}
           </div>
         )}
 

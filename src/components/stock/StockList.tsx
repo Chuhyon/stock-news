@@ -1,13 +1,14 @@
-import type { StockWithSummary } from '@/types/stock';
+import type { StockWithSummary, SelectedStock } from '@/types/stock';
 import StockCard from './StockCard';
 
 interface StockListProps {
   stocks: StockWithSummary[];
   title: string;
   description?: string;
+  selectedStocks?: SelectedStock[];
 }
 
-export default function StockList({ stocks, title, description }: StockListProps) {
+export default function StockList({ stocks, title, description, selectedStocks }: StockListProps) {
   if (stocks.length === 0) return null;
 
   return (
@@ -19,9 +20,18 @@ export default function StockList({ stocks, title, description }: StockListProps
         )}
       </div>
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        {stocks.map((stock) => (
-          <StockCard key={stock.code} stock={stock} />
-        ))}
+        {stocks.map((stock) => {
+          const selected = selectedStocks?.find((s) => s.code === stock.code);
+          return (
+            <StockCard
+              key={stock.code}
+              stock={stock}
+              potentialReason={selected?.reason}
+              crowdPsychology={selected?.crowd_psychology}
+              historicalPattern={selected?.historical_pattern}
+            />
+          );
+        })}
       </div>
     </section>
   );

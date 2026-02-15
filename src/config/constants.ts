@@ -11,7 +11,7 @@ export const AI_CONFIG = {
   summaryModel: 'gpt-4o-mini' as const,
   analysisModel: 'gpt-4o' as const,
   maxTokensSummary: 500,
-  maxTokensAnalysis: 1500,
+  maxTokensAnalysis: 2500,
   dailyCostLimitUsd: 3,
   batchSize: 5,
 } as const;

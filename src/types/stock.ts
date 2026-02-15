@@ -47,4 +47,6 @@ export interface SelectedStock {
   name_ko: string;
   score: number;
   reason: string;
+  crowd_psychology?: string;
+  historical_pattern?: string;
 }
