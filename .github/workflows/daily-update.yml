@@ -2,8 +2,10 @@ name: Daily Stock News Update
 
 on:
   schedule:
-    # 매일 UTC 15:00 (KST 00:00) 실행
-    - cron: '0 15 * * *'
+    # 매일 KST 06:00 (UTC 21:00)
+    - cron: '0 21 * * *'
+    # 매일 KST 18:00 (UTC 09:00)
+    - cron: '0 9 * * *'
   workflow_dispatch:
 
 jobs:
